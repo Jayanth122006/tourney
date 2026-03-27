@@ -95,39 +95,11 @@ const Registration = () => {
     }
 
     setIsSubmitting(true);
-    const payload = {
-      squadName: formData.squadName,
-      leaderName: formData.leaderName,
-      phone: formData.phone,
-      email: formData.email,
-      p1Name: formData.p1Name, p1Uid: formData.p1Uid,
-      p2Name: formData.p2Name, p2Uid: formData.p2Uid,
-      p3Name: formData.p3Name, p3Uid: formData.p3Uid,
-      p4Name: formData.p4Name, p4Uid: formData.p4Uid,
-      p5Name: formData.p5Name, p5Uid: formData.p5Uid
-    };
-
-    try {
-      const response = await fetch("https://tourneyb-production.up.railway.app/api/squads/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Registration failed');
-      }
-
-      navigate('/payment', { state: { squadData: data } });
-
-    } catch (error) {
-      setErrors({ ...newErrors, submission: error.message });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } finally {
+    // Defer registration until after payment verification
+    setTimeout(() => {
+      navigate('/payment', { state: { formData } });
       setIsSubmitting(false);
-    }
+    }, 800);
   };
 
   return (

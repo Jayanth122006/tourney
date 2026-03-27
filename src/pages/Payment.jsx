@@ -7,9 +7,9 @@ const Payment = () => {
   useScrollReveal();
   const location = useLocation();
   const navigate = useNavigate();
-  const squadData = location.state?.squadData;
+  const formData = location.state?.formData;
 
-  if (!squadData) {
+  if (!formData) {
     return <Navigate to="/register" replace />;
   }
 
@@ -27,27 +27,27 @@ const Payment = () => {
         amount: orderData.amount,
         currency: "INR",
         name: "Tourney Supreme",
-        description: `Entry Fee for ${squadData.squadName}`,
+        description: `Entry Fee for ${formData.squadName}`,
         order_id: orderData.id,
         handler: async function (response) {
           try {
-            // 3. Verify Payment
+            // 3. Verify & Register Atomically
             const verifyRes = await fetch("https://tourneyb-production.up.railway.app/api/payment/verify", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 ...response,
-                squadId: squadData.id
+                formData
               })
             });
 
-            const result = await verifyRes.text();
+            const result = await verifyRes.json();
 
-            if (result === "success") {
+            if (verifyRes.ok) {
               // 4. Navigate to Success on Verification
-              navigate('/success', { state: { squadData } });
+              navigate('/success', { state: { squadData: result } });
             } else {
-              alert("Payment verification failed! Please contact support.");
+              alert(result.message || "Payment verification failed!");
             }
           } catch (err) {
             console.error("Verification error:", err);
@@ -55,8 +55,8 @@ const Payment = () => {
           }
         },
         prefill: {
-          name: squadData.leaderName,
-          email: squadData.email,
+          name: formData.leaderName,
+          email: formData.email,
           contact: ""
         },
         method: {
@@ -96,15 +96,15 @@ const Payment = () => {
             <div style={{ display: 'grid', gap: '15px', background: 'rgba(255,255,255,0.02)', padding: '25px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.85rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase' }}>Squad Name</span>
-                <span style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-main)' }}>{squadData.squadName}</span>
+                <span style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-main)' }}>{formData.squadName}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.85rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase' }}>Squad Leader</span>
-                <span style={{ color: 'var(--text-muted)' }}>{squadData.leaderName}</span>
+                <span style={{ color: 'var(--text-muted)' }}>{formData.leaderName}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.85rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase' }}>Contact Number</span>
-                <span style={{ color: 'var(--text-muted)' }}>{squadData.phone}</span>
+                <span style={{ color: 'var(--text-muted)' }}>{formData.phone}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                 <span style={{ fontSize: '0.9rem', fontWeight: '800', opacity: 0.6 }}>ENTRY FEE</span>
