@@ -30,9 +30,8 @@ function App() {
             <Route path="/join" element={<JoinUs />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
-            <Route path="/adam" element={<Adam />} />
-            <Route path="/admin" element={<Navigate to="/adam" replace />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+             <Route path="/adam" element={<Adam />} />
+             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
         <Footer />
