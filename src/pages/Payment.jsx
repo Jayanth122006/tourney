@@ -13,10 +13,64 @@ const Payment = () => {
     return <Navigate to="/register" replace />;
   }
 
-  const handlePayment = () => {
-    setTimeout(() => {
-      navigate('/success', { state: { squadData } });
-    }, 1500);
+  const handlePayment = async () => {
+    try {
+      // 1. Create Order on Backend
+      const orderRes = await fetch("https://tourneyb-production.up.railway.app/api/payment/create-order", {
+        method: "POST"
+      });
+      const orderData = await orderRes.json();
+
+      // 2. Open Razorpay Checkout
+      const options = {
+        key: "rzp_test_SWE7CIsqs9blTU", // Test Key
+        amount: orderData.amount,
+        currency: "INR",
+        name: "Tourney Supreme",
+        description: `Entry Fee for ${squadData.squadName}`,
+        order_id: orderData.id,
+        handler: async function (response) {
+          try {
+            // 3. Verify Payment
+            const verifyRes = await fetch("https://tourneyb-production.up.railway.app/api/payment/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ...response,
+                squadId: squadData.id
+              })
+            });
+
+            const result = await verifyRes.text();
+
+            if (result === "success") {
+              // 4. Navigate to Success on Verification
+              navigate('/success', { state: { squadData } });
+            } else {
+              alert("Payment verification failed! Please contact support.");
+            }
+          } catch (err) {
+            console.error("Verification error:", err);
+            alert("An error occurred during verification.");
+          }
+        },
+        prefill: {
+          name: squadData.leaderName,
+          email: squadData.email,
+          contact: squadData.phone
+        },
+        theme: {
+          color: "#00f2fe"
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
+    } catch (err) {
+      console.error("Order creation failed:", err);
+      alert("Failed to initiate payment. Please try again.");
+    }
   };
 
   return (
