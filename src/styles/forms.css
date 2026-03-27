@@ -1,0 +1,149 @@
+/* Supreme Form & Component System */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+  text-decoration: none;
+  gap: 10px;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, #6e21b5 100%);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(138, 43, 226, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(138, 43, 226, 0.3), 0 0 15px var(--primary-glow);
+}
+
+.btn-outline {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px 20px;
+  color: #fff;
+  font-family: var(--font-content);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--primary);
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 15px rgba(138, 43, 226, 0.1);
+}
+
+/* Adam Portal Specifics */
+.nav-btn-tab {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  padding: 14px 18px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  font-weight: 600;
+}
+
+.nav-btn-tab.active {
+  background: rgba(138, 43, 226, 0.1);
+  color: #fff;
+}
+
+.nav-btn-tab:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.8);
+  transform: translateX(4px);
+}
+
+.stat-card {
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(138, 43, 226, 0.2);
+}
+
+.matches-card {
+  background: rgba(15, 15, 25, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  padding: 28px;
+  transition: all 0.3s ease;
+}
+
+.matches-card:hover {
+  background: rgba(20, 20, 35, 0.6);
+  border-color: rgba(0, 242, 254, 0.1);
+}
+
+.table-row-hover:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hover-danger {
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+}
+
+.hover-danger:hover {
+  color: var(--danger) !important;
+  background: rgba(255, 71, 87, 0.1) !important;
+}
+
+/* Utilities */
+.gradient-border-mask {
+  position: relative;
+  background: var(--bg-dark);
+  border-radius: inherit;
+}
+
+.gradient-border-mask::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  background: linear-gradient(135deg, rgba(138, 43, 226, 0.4), transparent, rgba(0, 242, 254, 0.3));
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.5;
+}
