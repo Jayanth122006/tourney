@@ -57,7 +57,13 @@ const Payment = () => {
         prefill: {
           name: squadData.leaderName,
           email: squadData.email,
-          contact: squadData.phone
+          contact: ""
+        },
+        method: {
+          upi: true,
+          card: true,
+          netbanking: true,
+          wallet: true
         },
         theme: {
           color: "#00f2fe"

@@ -74,47 +74,59 @@ const Registration = () => {
     if (!agreeTerms) newErrors.agreeTerms = 'Required';
     
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setIsSubmitting(true);
-      const payload = {
-        squadName: formData.squadName,
-        leaderName: formData.leaderName,
-        phone: formData.phone,
-        email: formData.email,
-        p1Name: formData.p1Name, p1Uid: formData.p1Uid,
-        p2Name: formData.p2Name, p2Uid: formData.p2Uid,
-        p3Name: formData.p3Name, p3Uid: formData.p3Uid,
-        p4Name: formData.p4Name, p4Uid: formData.p4Uid,
-        p5Name: formData.p5Name, p5Uid: formData.p5Uid
-      };
-
-      try {
-        const response = await fetch("https://tourneyb-production.up.railway.app/api/squads/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Registration failed');
-        }
-
-        navigate('/payment', { state: { squadData: data } });
-
-      } catch (error) {
-        // Professional Error Feedback for Duplicates/Full
-        setErrors({ ...errors, submission: error.message });
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      // Scroll to first error
+      const firstError = Object.keys(newErrors)[0];
+      const element = document.getElementsByName(firstError)[0];
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.focus();
+      } else {
+        // Fallback to top for general errors
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } finally {
-        setIsSubmitting(false);
       }
+      return;
+    }
+
+    setIsSubmitting(true);
+    const payload = {
+      squadName: formData.squadName,
+      leaderName: formData.leaderName,
+      phone: formData.phone,
+      email: formData.email,
+      p1Name: formData.p1Name, p1Uid: formData.p1Uid,
+      p2Name: formData.p2Name, p2Uid: formData.p2Uid,
+      p3Name: formData.p3Name, p3Uid: formData.p3Uid,
+      p4Name: formData.p4Name, p4Uid: formData.p4Uid,
+      p5Name: formData.p5Name, p5Uid: formData.p5Uid
+    };
+
+    try {
+      const response = await fetch("https://tourneyb-production.up.railway.app/api/squads/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed');
+      }
+
+      navigate('/payment', { state: { squadData: data } });
+
+    } catch (error) {
+      setErrors({ ...newErrors, submission: error.message });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -270,6 +282,7 @@ const Registration = () => {
             <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', gap: '15px', marginBottom: '20px' }}>
               <input 
                 type="checkbox" 
+                name="confirmUids"
                 checked={confirmUids} 
                 onChange={(e) => setConfirmUids(e.target.checked)}
                 style={{ marginTop: '5px', width: '24px', height: '24px', accentColor: 'var(--primary)', flexShrink: 0 }}
@@ -283,6 +296,7 @@ const Registration = () => {
             <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', gap: '15px' }}>
               <input 
                 type="checkbox" 
+                name="agreeTerms"
                 checked={agreeTerms} 
                 onChange={(e) => setAgreeTerms(e.target.checked)}
                 style={{ marginTop: '5px', width: '24px', height: '24px', accentColor: 'var(--primary)', flexShrink: 0 }}
