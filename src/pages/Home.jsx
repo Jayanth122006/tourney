@@ -9,7 +9,7 @@ const Home = () => {
   const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8081/api/settings/registration_open')
+    fetch('https://tourneyb-production.up.railway.app/api/settings/registration_open')
       .then(res => res.json())
       .then(data => setIsOpen(data.value === 'true'))
       .catch(() => setIsOpen(true));

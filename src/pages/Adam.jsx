@@ -45,10 +45,10 @@ const Adam = () => {
         try {
             const fetchWrap = (url) => fetch(url).then(r => r.ok ? r.json() : []).catch(() => []);
             const [s, m, q, c] = await Promise.all([
-                fetchWrap('http://localhost:8081/api/squads'),
-                fetchWrap('http://localhost:8081/api/matches'),
-                fetchWrap('http://localhost:8081/api/support'),
-                fetch('http://localhost:8081/api/admin/registration-status').then(r => r.json()).catch(() => ({ status: 'true' }))
+                fetchWrap('https://tourneyb-production.up.railway.app/api/squads'),
+                fetchWrap('https://tourneyb-production.up.railway.app/api/matches'),
+                fetchWrap('https://tourneyb-production.up.railway.app/api/support'),
+                fetch('https://tourneyb-production.up.railway.app/api/admin/registration-status').then(r => r.json()).catch(() => ({ status: 'true' }))
             ]);
             setSquads(s);
             setMatches(m);
@@ -62,7 +62,7 @@ const Adam = () => {
     const handleDoorAccess = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:8081/api/admin/verify-pin', {
+            const res = await fetch('https://tourneyb-production.up.railway.app/api/admin/verify-pin', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ pin: pinEntry })
@@ -89,7 +89,7 @@ const Adam = () => {
     const togglePortalGate = async () => {
         const next = config.registration_open === 'true' ? 'false' : 'true';
         try {
-            const res = await fetch('http://localhost:8081/api/admin/registration-status', {
+            const res = await fetch('https://tourneyb-production.up.railway.app/api/admin/registration-status', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: next })
@@ -100,7 +100,7 @@ const Adam = () => {
 
     const updatePaymentStatus = async (id, status) => {
         try {
-            const res = await fetch(`http://localhost:8081/api/admin/squads/${id}/payment`, {
+            const res = await fetch(`https://tourneyb-production.up.railway.app/api/admin/squads/${id}/payment`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status })
@@ -113,14 +113,14 @@ const Adam = () => {
         setConfirmAction({
             message: "Are you sure you want to delete this match pairing?",
             onConfirm: async () => {
-                await fetch(`http://localhost:8081/api/matches/${id}`, { method: 'DELETE' });
+                await fetch(`https://tourneyb-production.up.railway.app/api/matches/${id}`, { method: 'DELETE' });
                 setMatches(prev => prev.filter(m => m.id !== id));
             }
         });
     };
 
     const resolveQuery = async (id) => {
-        const res = await fetch(`http://localhost:8081/api/support/${id}/resolve`, { method: 'PUT' });
+        const res = await fetch(`https://tourneyb-production.up.railway.app/api/support/${id}/resolve`, { method: 'PUT' });
         if (res.ok) syncTerminalData();
     };
 
@@ -128,7 +128,7 @@ const Adam = () => {
         setConfirmAction({
             message: "Are you sure you want to permanently delete this support ticket?",
             onConfirm: async () => {
-                await fetch(`http://localhost:8081/api/support/${id}`, { method: 'DELETE' });
+                await fetch(`https://tourneyb-production.up.railway.app/api/support/${id}`, { method: 'DELETE' });
                 syncTerminalData();
             }
         });
@@ -139,7 +139,7 @@ const Adam = () => {
             message: "Generate new matches? This will overwrite all existing matches.",
             onConfirm: async () => {
                 setLoading(true);
-                await fetch('http://localhost:8081/api/matches/generate', { method: 'POST' });
+                await fetch('https://tourneyb-production.up.railway.app/api/matches/generate', { method: 'POST' });
                 await syncTerminalData();
                 setLoading(false);
             }
@@ -153,7 +153,7 @@ const Adam = () => {
                 const check = window.prompt('Type "DELETE" to confirm factory reset:');
                 if (check !== 'DELETE') return;
                 setLoading(true);
-                await fetch('http://localhost:8081/api/admin/reset', { method: 'DELETE' });
+                await fetch('https://tourneyb-production.up.railway.app/api/admin/reset', { method: 'DELETE' });
                 await syncTerminalData();
                 setLoading(false);
                 setActiveTab('overview');

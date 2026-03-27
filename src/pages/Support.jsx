@@ -30,7 +30,7 @@ const Support = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8081/api/support", {
+      const response = await fetch("https://tourneyb-production.up.railway.app/api/support", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(supportData)

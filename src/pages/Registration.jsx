@@ -29,7 +29,7 @@ const Registration = () => {
   useEffect(() => {
     const checkStatus = async () => {
       try {
-        const res = await fetch('http://localhost:8081/api/admin/registration-status');
+        const res = await fetch('https://tourneyb-production.up.railway.app/api/admin/registration-status');
         if (res.ok) {
           const data = await res.json();
           setIsRegistrationOpen(data.status === 'true');
@@ -94,7 +94,7 @@ const Registration = () => {
       };
 
       try {
-        const response = await fetch("http://localhost:8081/api/squads/register", {
+        const response = await fetch("https://tourneyb-production.up.railway.app/api/squads/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
