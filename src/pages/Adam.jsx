@@ -169,11 +169,12 @@ const Adam = () => {
             });
             if (res.ok) {
                 addNotification('Match details saved! 💾');
-                syncTerminalData();
+                // Ensure we sync AFTER the save is confirmed by the server
+                await syncTerminalData();
             } else {
                 addNotification('Failed to save match details', 'error');
             }
-        } catch (e) { 
+        } catch (error) {
             addNotification('Network error while saving', 'error');
         } finally {
             match.saving = false;
