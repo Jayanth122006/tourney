@@ -267,3 +267,23 @@ ul {
 ::-webkit-scrollbar-thumb:hover {
   background: #3e3e4a;
 }
+
+/* Notification Animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.toast-notification.error {
+  border-left: 4px solid #ff4757;
+}
+
+.toast-notification.success {
+  border-left: 4px solid #00b894;
+}

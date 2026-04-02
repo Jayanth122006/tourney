@@ -25,6 +25,15 @@ const Adam = () => {
     const [matches, setMatches] = useState([]);
     const [queries, setQueries] = useState([]);
     const [config, setConfig] = useState({ registration_open: 'true' });
+    const [notifications, setNotifications] = useState([]);
+
+    const addNotification = (message, type = 'success') => {
+        const id = Date.now();
+        setNotifications(prev => [...prev, { id, message, type }]);
+        setTimeout(() => {
+            setNotifications(prev => prev.filter(n => n.id !== id));
+        }, 3000);
+    };
 
     // UI Interaction
     const [searchQuery, setSearchQuery] = useState('');
@@ -140,6 +149,7 @@ const Adam = () => {
             onConfirm: async () => {
                 setLoading(true);
                 await fetch('https://tourneyb-production.up.railway.app/api/matches/generate', { method: 'POST' });
+                addNotification('Matches generated successfully! ⚔️');
                 await syncTerminalData();
                 setLoading(false);
             }
@@ -148,6 +158,9 @@ const Adam = () => {
 
     const handleMatchUpdate = async (id) => {
         const match = matches.find(m => m.id === id);
+        match.saving = true;
+        setMatches([...matches]);
+
         try {
             const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/update/${id}`, {
                 method: 'POST',
@@ -155,45 +168,43 @@ const Adam = () => {
                 body: JSON.stringify(match)
             });
             if (res.ok) {
-                alert('Match data saved.');
+                addNotification('Match details saved! 💾');
                 syncTerminalData();
+            } else {
+                addNotification('Failed to save match details', 'error');
             }
-        } catch (e) { alert('Failed to save match data.'); }
+        } catch (e) { 
+            addNotification('Network error while saving', 'error');
+        } finally {
+            match.saving = false;
+            setMatches([...matches]);
+        }
     };
 
     const handleSendToTeams = async (id) => {
         const match = matches.find(m => m.id === id);
-        console.log('Starting email send process for match ID:', id);
-        
         if (!match.roomId || !match.password || !match.matchDate || !match.matchTime) {
-            alert('Please fill all match details before sending.');
+            addNotification('Please fill all details first!', 'error');
             return;
         }
 
-        setLoading(true);
-        console.log('Sending POST request to backend...');
+        match.sending = true;
+        setMatches([...matches]);
+
         try {
             const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/send/${id}`, { method: 'POST' });
-            console.log('Response received. Status:', res.status);
-            
             if (res.ok) {
-                alert('Email request accepted! 🚀 The server is sending them in the background.');
+                addNotification('Emails are on the way! 🚀');
                 syncTerminalData();
             } else {
-                let errorMsg = 'Server error';
-                try {
-                    const errorData = await res.json();
-                    errorMsg = errorData.message || errorMsg;
-                } catch (e) {
-                    console.error('Failed to parse error JSON:', e);
-                }
-                alert(`Failed to send: ${errorMsg}`);
+                const errorData = await res.json();
+                addNotification(errorData.message || 'Server error', 'error');
             }
         } catch (error) {
-            console.error('Network error during email send:', error);
-            alert('Network error. Check your internet or console.');
+            addNotification('Network error. Check console.', 'error');
         } finally {
-            setLoading(false);
+            match.sending = false;
+            setMatches([...matches]);
         }
     };
 
@@ -441,7 +452,7 @@ const Adam = () => {
                                 </div>
                                 <div style={{ display: 'flex', gap: '15px' }}>
                                     <button className="btn btn-primary" onClick={generateMatches}>Generate Matches</button>
-                                    <button className="btn btn-outline" onClick={() => { navigator.clipboard.writeText(matches.map(m => `${m.squad1} vs ${m.squad2}`).join('\n')); alert('Copied.'); }}>Copy Matches</button>
+                                    <button className="btn btn-outline" onClick={() => { navigator.clipboard.writeText(matches.map(m => `${m.squad1} vs ${m.squad2}`).join('\n')); addNotification('Matches copied to clipboard!'); }}>Copy Matches</button>
                                 </div>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '20px' }}>
@@ -512,19 +523,20 @@ const Adam = () => {
 
                                         <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
                                             <button 
-                                                className="btn btn-outline" 
-                                                style={{ flex: 1, height: '45px', borderRadius: '12px', fontSize: '0.8rem' }}
+                                                className="btn" 
+                                                style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.05)', color: '#fff', height: '45px', borderRadius: '12px', fontSize: '0.8rem' }}
                                                 onClick={() => handleMatchUpdate(m.id)}
+                                                disabled={m.saving}
                                             >
-                                                <Save size={16} /> Save
+                                                {m.saving ? 'Saving...' : <><Save size={16} /> Save</>}
                                             </button>
                                             <button 
                                                 className="btn btn-primary" 
-                                                disabled={!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent}
-                                                style={{ flex: 1.5, height: '45px', borderRadius: '12px', fontSize: '0.8rem', opacity: (!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent) ? 0.5 : 1 }}
+                                                disabled={!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent || m.sending}
+                                                style={{ flex: 1.5, height: '45px', borderRadius: '12px', fontSize: '0.8rem', opacity: (!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent || m.sending) ? 0.5 : 1 }}
                                                 onClick={() => handleSendToTeams(m.id)}
                                             >
-                                                {m.sent ? <><Check size={16} /> Sent</> : <><Send size={16} /> Send to Teams</>}
+                                                {m.sending ? 'Sending...' : (m.sent ? <><Check size={16} /> Sent</> : <><Send size={16} /> Send to Teams</>)}
                                             </button>
                                         </div>
                                     </div>
@@ -579,6 +591,29 @@ const Adam = () => {
                     )}
                 </div>
             </main>
+
+            {/* Notifications */}
+            <div style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999, display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {notifications.map(n => (
+                    <div key={n.id} className={`toast-notification ${n.type}`} style={{ 
+                        padding: '12px 20px', 
+                        borderRadius: '12px', 
+                        background: n.type === 'error' ? 'rgba(255,71,71,0.9)' : 'rgba(0,184,148,0.9)', 
+                        color: '#fff', 
+                        backdropFilter: 'blur(10px)',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+                        animation: 'slideIn 0.3s ease-out forwards',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        fontSize: '0.9rem',
+                        fontWeight: '600'
+                    }}>
+                        {n.type === 'error' ? <AlertCircle size={18} /> : <CheckCircle size={18} />}
+                        {n.message}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
