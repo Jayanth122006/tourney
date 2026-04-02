@@ -149,7 +149,7 @@ const Adam = () => {
     const handleMatchUpdate = async (id) => {
         const match = matches.find(m => m.id === id);
         try {
-            const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/${id}/update`, {
+            const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/update/${id}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(match)
@@ -170,7 +170,7 @@ const Adam = () => {
 
         setLoading(true);
         try {
-            const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/${id}/send`, { method: 'POST' });
+            const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/send/${id}`, { method: 'POST' });
             if (res.ok) {
                 alert('Email sent to both teams! 🚀');
                 syncTerminalData();
@@ -431,7 +431,7 @@ const Adam = () => {
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '20px' }}>
                                 {matches.map(m => (
-                                    <div key={m.id} className="matches-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px', border: m.isSent ? '1px solid var(--success)' : '' }}>
+                                    <div key={m.id} className="matches-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px', border: m.sent ? '1px solid var(--success)' : '' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
                                                 <div style={{ fontWeight: '800', fontSize: '1.2rem', color: '#fff', flex: 1, textAlign: 'right' }}>{m.squad1}</div>
@@ -505,11 +505,11 @@ const Adam = () => {
                                             </button>
                                             <button 
                                                 className="btn btn-primary" 
-                                                disabled={!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.isSent}
-                                                style={{ flex: 1.5, height: '45px', borderRadius: '12px', fontSize: '0.8rem', opacity: (!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.isSent) ? 0.5 : 1 }}
+                                                disabled={!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent}
+                                                style={{ flex: 1.5, height: '45px', borderRadius: '12px', fontSize: '0.8rem', opacity: (!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent) ? 0.5 : 1 }}
                                                 onClick={() => handleSendToTeams(m.id)}
                                             >
-                                                {m.isSent ? <><Check size={16} /> Sent</> : <><Send size={16} /> Send to Teams</>}
+                                                {m.sent ? <><Check size={16} /> Sent</> : <><Send size={16} /> Send to Teams</>}
                                             </button>
                                         </div>
                                     </div>
