@@ -163,23 +163,38 @@ const Adam = () => {
 
     const handleSendToTeams = async (id) => {
         const match = matches.find(m => m.id === id);
+        console.log('Starting email send process for match ID:', id);
+        
         if (!match.roomId || !match.password || !match.matchDate || !match.matchTime) {
             alert('Please fill all match details before sending.');
             return;
         }
 
         setLoading(true);
+        console.log('Sending POST request to backend...');
         try {
             const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/send/${id}`, { method: 'POST' });
+            console.log('Response received. Status:', res.status);
+            
             if (res.ok) {
-                alert('Email sent to both teams! 🚀');
+                alert('Email request accepted! 🚀 The server is sending them in the background.');
                 syncTerminalData();
             } else {
-                const data = await res.json();
-                alert(data.message || 'Failed to send emails.');
+                let errorMsg = 'Server error';
+                try {
+                    const errorData = await res.json();
+                    errorMsg = errorData.message || errorMsg;
+                } catch (e) {
+                    console.error('Failed to parse error JSON:', e);
+                }
+                alert(`Failed to send: ${errorMsg}`);
             }
-        } catch (e) { alert('Email Service Offline.'); }
-        finally { setLoading(false); }
+        } catch (error) {
+            console.error('Network error during email send:', error);
+            alert('Network error. Check your internet or console.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleMatchInputChange = (id, field, value) => {
