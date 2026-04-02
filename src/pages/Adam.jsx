@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
     Users, Sword, RefreshCw, Trophy, ShieldAlert, Lock, Save,
     Trash2, Copy, Check, LayoutDashboard, MessageSquare,
-    Settings, LogOut, Search, UserCheck, AlertCircle, CheckCircle, Clock, Calendar, Send
+    Settings, LogOut, Search, UserCheck, AlertCircle, Clock, Calendar, Send
 } from 'lucide-react';
 import '../styles/forms.css';
 
@@ -609,7 +609,7 @@ const Adam = () => {
                         fontSize: '0.9rem',
                         fontWeight: '600'
                     }}>
-                        {n.type === 'error' ? <AlertCircle size={18} /> : <CheckCircle size={18} />}
+                        {n.type === 'error' ? <AlertCircle size={18} /> : <Check size={18} />}
                         {n.message}
                     </div>
                 ))}
