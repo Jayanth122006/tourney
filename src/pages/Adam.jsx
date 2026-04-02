@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
     Users, Sword, RefreshCw, Trophy, ShieldAlert, Lock, Save,
     Trash2, Copy, Check, LayoutDashboard, MessageSquare,
-    Settings, LogOut, Search, UserCheck, AlertCircle, Clock, Calendar, Send
+    Settings, LogOut, Search, UserCheck, AlertCircle, CheckCircle, Clock, Calendar, Send
 } from 'lucide-react';
 import '../styles/forms.css';
 
