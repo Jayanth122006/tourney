@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
     Users, Sword, RefreshCw, Trophy, ShieldAlert, Lock, Save,
     Trash2, Copy, Check, LayoutDashboard, MessageSquare,
-    Settings, LogOut, Search, UserCheck, AlertCircle, Clock
+    Settings, LogOut, Search, UserCheck, AlertCircle, Clock, Calendar, Send
 } from 'lucide-react';
 import '../styles/forms.css';
 
@@ -144,6 +144,46 @@ const Adam = () => {
                 setLoading(false);
             }
         });
+    };
+
+    const handleMatchUpdate = async (id) => {
+        const match = matches.find(m => m.id === id);
+        try {
+            const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/${id}/update`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(match)
+            });
+            if (res.ok) {
+                alert('Match data saved.');
+                syncTerminalData();
+            }
+        } catch (e) { alert('Failed to save match data.'); }
+    };
+
+    const handleSendToTeams = async (id) => {
+        const match = matches.find(m => m.id === id);
+        if (!match.roomId || !match.password || !match.matchDate || !match.matchTime) {
+            alert('Please fill all match details before sending.');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/${id}/send`, { method: 'POST' });
+            if (res.ok) {
+                alert('Email sent to both teams! 🚀');
+                syncTerminalData();
+            } else {
+                const data = await res.json();
+                alert(data.message || 'Failed to send emails.');
+            }
+        } catch (e) { alert('Email Service Offline.'); }
+        finally { setLoading(false); }
+    };
+
+    const handleMatchInputChange = (id, field, value) => {
+        setMatches(prev => prev.map(m => m.id === id ? { ...m, [field]: value } : m));
     };
 
     const systemPurge = () => {
@@ -391,26 +431,87 @@ const Adam = () => {
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '20px' }}>
                                 {matches.map(m => (
-                                    <div key={m.id} className="matches-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
-                                                <div style={{ fontWeight: '800', fontSize: '1.2rem', color: 'var(--primary)', flex: 1, textAlign: 'right' }}>{m.squad1}</div>
-                                                <div style={{ padding: '6px 14px', background: 'rgba(0, 242, 254, 0.1)', color: 'var(--accent)', borderRadius: '12px', fontSize: '0.75rem', fontWeight: '900', border: '1px solid rgba(0, 242, 254, 0.2)' }}>VS</div>
-                                                <div style={{ fontWeight: '800', fontSize: '1.2rem', color: 'var(--primary)', flex: 1, textAlign: 'left' }}>{m.squad2}</div>
+                                    <div key={m.id} className="matches-card" style={{ display: 'flex', flexDirection: 'column', gap: '20px', border: m.isSent ? '1px solid var(--success)' : '' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                                                <div style={{ fontWeight: '800', fontSize: '1.2rem', color: '#fff', flex: 1, textAlign: 'right' }}>{m.squad1}</div>
+                                                <div style={{ padding: '4px 10px', background: 'rgba(0, 242, 254, 0.1)', color: 'var(--accent)', borderRadius: '8px', fontSize: '0.65rem', fontWeight: '900' }}>VS</div>
+                                                <div style={{ fontWeight: '800', fontSize: '1.2rem', color: '#fff', flex: 1, textAlign: 'left' }}>{m.squad2}</div>
                                             </div>
-                                            <button onClick={() => deleteMatchPair(m.id)} className="btn hover-danger" style={{ padding: '8px', background: 'transparent', border: 'none', marginLeft: '10px' }}>
-                                                <Trash2 size={18} />
+                                            <button onClick={() => deleteMatchPair(m.id)} className="hover-danger" style={{ background: 'transparent', border: 'none', marginLeft: '10px', opacity: 0.3 }}>
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
 
-                                        <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '16px', padding: '16px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                                            <div style={{ fontSize: '0.7rem', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '1px' }}>Manual Room Access</div>
-                                            <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Share Room ID/Pass with teams manually.</div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                            <div>
+                                                <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Room ID</label>
+                                                <input 
+                                                    className="form-input" 
+                                                    style={{ height: '42px', padding: '10px', fontSize: '0.85rem' }} 
+                                                    value={m.roomId || ''} 
+                                                    onChange={(e) => handleMatchInputChange(m.id, 'roomId', e.target.value)}
+                                                    placeholder="123456"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Password</label>
+                                                <input 
+                                                    className="form-input" 
+                                                    style={{ height: '42px', padding: '10px', fontSize: '0.85rem' }} 
+                                                    value={m.password || ''} 
+                                                    onChange={(e) => handleMatchInputChange(m.id, 'password', e.target.value)}
+                                                    placeholder="abcd"
+                                                />
+                                            </div>
                                         </div>
 
-                                        <button className="btn btn-outline" style={{ width: '100%', height: '48px', borderRadius: '14px', fontSize: '0.85rem' }} onClick={() => { navigator.clipboard.writeText(`Match: ${m.squad1} vs ${m.squad2}`); setJustCopiedId(m.id); setTimeout(() => setJustCopiedId(null), 2000); }}>
-                                            {justCopiedId === m.id ? <><Check size={16} /> COPIED</> : <><Copy size={16} /> COPY PAIRING</>}
-                                        </button>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px' }}>
+                                            <div>
+                                                <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Date</label>
+                                                <div style={{ position: 'relative' }}>
+                                                    <Calendar size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
+                                                    <input 
+                                                        className="form-input" 
+                                                        style={{ height: '42px', padding: '10px 10px 10px 35px', fontSize: '0.85rem' }} 
+                                                        value={m.matchDate || ''} 
+                                                        onChange={(e) => handleMatchInputChange(m.id, 'matchDate', e.target.value)}
+                                                        placeholder="5 April"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Time</label>
+                                                <div style={{ position: 'relative' }}>
+                                                    <Clock size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
+                                                    <input 
+                                                        className="form-input" 
+                                                        style={{ height: '42px', padding: '10px 10px 10px 35px', fontSize: '0.85rem' }} 
+                                                        value={m.matchTime || ''} 
+                                                        onChange={(e) => handleMatchInputChange(m.id, 'matchTime', e.target.value)}
+                                                        placeholder="7:00 PM"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
+                                            <button 
+                                                className="btn btn-outline" 
+                                                style={{ flex: 1, height: '45px', borderRadius: '12px', fontSize: '0.8rem' }}
+                                                onClick={() => handleMatchUpdate(m.id)}
+                                            >
+                                                <Save size={16} /> Save
+                                            </button>
+                                            <button 
+                                                className="btn btn-primary" 
+                                                disabled={!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.isSent}
+                                                style={{ flex: 1.5, height: '45px', borderRadius: '12px', fontSize: '0.8rem', opacity: (!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.isSent) ? 0.5 : 1 }}
+                                                onClick={() => handleSendToTeams(m.id)}
+                                            >
+                                                {m.isSent ? <><Check size={16} /> Sent</> : <><Send size={16} /> Send to Teams</>}
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
