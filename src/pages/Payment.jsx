@@ -19,8 +19,14 @@ const Payment = () => {
       const orderRes = await fetch("https://tourneyb-production.up.railway.app/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
       });
       const orderData = await orderRes.json();
+      
+      if (!orderRes.ok) {
+         throw new Error(orderData.message || "Registration failed or unavailable.");
+      }
+
       const sessionId = orderData.payment_session_id;
       const orderId = orderData.order_id;
 
@@ -53,10 +59,16 @@ const Payment = () => {
 
                 if (verifyRes.ok) {
                   const resultApi = await verifyRes.json();
-                  // 4. Navigate to Success on Verification
-                  navigate('/success', { state: { squadData: resultApi } });
+                  if (resultApi.pendingMessage) {
+                      alert(resultApi.pendingMessage);
+                      navigate('/success', { state: { squadData: formData } });
+                  } else {
+                      // 4. Navigate to Success on Verification
+                      navigate('/success', { state: { squadData: resultApi } });
+                  }
                 } else {
-                  alert("Payment verification failed!");
+                  const errorResult = await verifyRes.json().catch(() => ({}));
+                  alert(errorResult.message || "Payment verification failed!");
                 }
             } catch (err) {
                 console.error("Verification error:", err);
@@ -66,8 +78,8 @@ const Payment = () => {
       });
 
     } catch (err) {
-      console.error("Order creation failed:", err);
-      alert("Failed to initiate payment. Please try again.");
+      console.error("Payment flow failed:", err);
+      alert(err.message || "Failed to initiate payment. Please try again.");
     }
   };
 
