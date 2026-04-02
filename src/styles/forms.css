@@ -147,3 +147,16 @@
   z-index: -1;
   opacity: 0.5;
 }
+
+/* Responsive Grid Definitions */
+.responsive-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media(min-width: 768px) {
+  .responsive-grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}

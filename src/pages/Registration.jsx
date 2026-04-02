@@ -148,7 +148,7 @@ const Registration = () => {
                 {errors.squadName && <span style={{ color: 'var(--danger)', fontSize: '0.75rem', marginTop: '8px', display: 'block' }}>{errors.squadName}</span>}
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '25px' }}>
+              <div className="responsive-grid-2" style={{ marginBottom: '25px' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>Leader Name</label>
                   <input
@@ -204,7 +204,7 @@ const Registration = () => {
                 <strong>Important:</strong> Exact Free Fire UIDs are required. Any mismatch may result in disqualification. Players must be Level 40+.
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px', marginBottom: '20px' }}>
+              <div className="responsive-grid-2" style={{ marginBottom: '20px' }}>
                 {[1, 2, 3, 4].map(num => (
                   <div key={num} style={{ background: 'rgba(255,255,255,0.02)', padding: '25px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
                     <h4 style={{ fontSize: '1rem', fontWeight: '800', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -232,7 +232,7 @@ const Registration = () => {
                   <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'var(--surface-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}>5</div>
                   Substitute <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: '800', padding: '2px 8px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', marginLeft: 'auto' }}>OPTIONAL</span>
                 </h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '20px' }}>
+                <div className="responsive-grid-2">
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '12px' }}>In-game Name</label>
                     <input type="text" name="p5Name" value={formData.p5Name} onChange={handleChange} placeholder="Sub IGN (Optional)" className="form-input" style={{ width: '100%', border: errors.p5Name ? '1px solid var(--danger)' : '' }} />
