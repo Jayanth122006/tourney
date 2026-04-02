@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { 
-    Users, Sword, RefreshCw, Trophy, ShieldAlert, Lock, Save, 
-    Trash2, Copy, Check, LayoutDashboard, MessageSquare, 
+import {
+    Users, Sword, RefreshCw, Trophy, ShieldAlert, Lock, Save,
+    Trash2, Copy, Check, LayoutDashboard, MessageSquare,
     Settings, LogOut, Search, UserCheck, AlertCircle, Clock
 } from 'lucide-react';
 import '../styles/forms.css';
@@ -14,7 +14,7 @@ const Adam = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [pinEntry, setPinEntry] = useState('');
     const [activeTab, setActiveTab] = useState('overview');
-    
+
     // Global States
     const [confirmAction, setConfirmAction] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ const Adam = () => {
     const [matches, setMatches] = useState([]);
     const [queries, setQueries] = useState([]);
     const [config, setConfig] = useState({ registration_open: 'true' });
-    
+
     // UI Interaction
     const [searchQuery, setSearchQuery] = useState('');
     const [justCopiedId, setJustCopiedId] = useState(null);
@@ -164,7 +164,7 @@ const Adam = () => {
     // --- Components ---
 
     const SideNavItem = ({ id, label, icon, badge }) => (
-        <button 
+        <button
             className={`nav-btn-tab ${activeTab === id ? 'active' : ''}`}
             onClick={() => setActiveTab(id)}
         >
@@ -200,10 +200,10 @@ const Adam = () => {
                     <h2 className="gradient-text" style={{ fontSize: '1.8rem', marginBottom: '8px' }}>Admin Login</h2>
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '40px' }}>Enter your security PIN</p>
                     <form onSubmit={handleDoorAccess}>
-                        <input 
-                            type="password" 
-                            className="form-input" 
-                            placeholder="ENTER PIN" 
+                        <input
+                            type="password"
+                            className="form-input"
+                            placeholder="ENTER PIN"
                             value={pinEntry}
                             onChange={e => setPinEntry(e.target.value)}
                             style={{ textAlign: 'center', fontSize: '1.8rem', letterSpacing: '12px', borderRadius: '16px', background: '#000', height: '70px', marginBottom: '25px', border: '1px solid rgba(255,255,255,0.1)' }}
@@ -358,7 +358,7 @@ const Adam = () => {
                                                     <div>{new Date(s.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
                                                 </td>
                                                 <td style={{ textAlign: 'center' }}>
-                                                    <button 
+                                                    <button
                                                         onClick={() => updatePaymentStatus(s.id, s.paymentStatus === 'SUCCESS' ? 'PENDING' : 'SUCCESS')}
                                                         className={`btn ${s.paymentStatus === 'SUCCESS' ? 'btn-success' : 'btn-outline-danger'}`}
                                                         style={{ borderRadius: '10px', fontSize: '0.65rem', padding: '6px 12px', minWidth: '90px' }}
@@ -402,7 +402,7 @@ const Adam = () => {
                                                 <Trash2 size={18} />
                                             </button>
                                         </div>
-                                        
+
                                         <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '16px', padding: '16px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
                                             <div style={{ fontSize: '0.7rem', fontWeight: '800', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '1px' }}>Manual Room Access</div>
                                             <div style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)' }}>Share Room ID/Pass with teams manually.</div>

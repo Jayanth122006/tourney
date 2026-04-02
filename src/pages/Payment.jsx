@@ -17,61 +17,53 @@ const Payment = () => {
     try {
       // 1. Create Order on Backend
       const orderRes = await fetch("https://tourneyb-production.up.railway.app/api/payment/create-order", {
-        method: "POST"
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
       const orderData = await orderRes.json();
+      const sessionId = orderData.payment_session_id;
+      const orderId = orderData.order_id;
 
-      // 2. Open Razorpay Checkout
-      const options = {
-        key: "rzp_test_SWE7CIsqs9blTU", // Test Key
-        amount: orderData.amount,
-        currency: "INR",
-        name: "Tourney Supreme",
-        description: `Entry Fee for ${formData.squadName}`,
-        order_id: orderData.id,
-        handler: async function (response) {
-          try {
-            // 3. Verify & Register Atomically
-            const verifyRes = await fetch("https://tourneyb-production.up.railway.app/api/payment/verify", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                ...response,
-                formData
-              })
-            });
+      if (!sessionId) {
+        throw new Error("Failed to get payment session id");
+      }
 
-            const result = await verifyRes.json();
-
-            if (verifyRes.ok) {
-              // 4. Navigate to Success on Verification
-              navigate('/success', { state: { squadData: result } });
-            } else {
-              alert(result.message || "Payment verification failed!");
-            }
-          } catch (err) {
-            console.error("Verification error:", err);
-            alert("An error occurred during verification.");
-          }
-        },
-        prefill: {
-          name: formData.leaderName,
-          email: formData.email,
-          contact: ""
-        },
-        method: {
-          upi: true,
-          card: true,
-          netbanking: true,
-          wallet: true
-        },
-        theme: {
-          color: "#00f2fe"
+      // 2. Open Cashfree Checkout
+      const { load } = await import('@cashfreepayments/cashfree-js');
+      const cashfree = await load({ mode: "production" });
+      
+      cashfree.checkout({
+        paymentSessionId: sessionId,
+        redirectTarget: "_modal",
+      }).then(async (result) => {
+        if (result.error) {
+           alert(result.error.message || "Payment cancelled or failed.");
         }
-      };
+        if (result.paymentDetails) {
+            // 3. Verify & Register Atomically
+            try {
+                const verifyRes = await fetch("https://tourneyb-production.up.railway.app/api/payment/verify", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    orderId: orderId,
+                    formData
+                  })
+                });
 
-      const rzp = new window.Razorpay(options);
-      rzp.open();
+                if (verifyRes.ok) {
+                  const resultApi = await verifyRes.json();
+                  // 4. Navigate to Success on Verification
+                  navigate('/success', { state: { squadData: resultApi } });
+                } else {
+                  alert("Payment verification failed!");
+                }
+            } catch (err) {
+                console.error("Verification error:", err);
+                alert("An error occurred during verification.");
+            }
+        }
+      });
 
     } catch (err) {
       console.error("Order creation failed:", err);
@@ -90,9 +82,9 @@ const Payment = () => {
         <div className="glass-panel" style={{ padding: '50px', borderRadius: '32px' }}>
           <div style={{ marginBottom: '40px' }}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: '800', marginBottom: '30px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <ShieldCheck size={20} color="var(--success)" /> Summary
+              <ShieldCheck size={20} color="var(--success)" /> Summary
             </h3>
-            
+
             <div style={{ display: 'grid', gap: '15px', background: 'rgba(255,255,255,0.02)', padding: '25px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '0.85rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase' }}>Squad Name</span>
@@ -118,7 +110,7 @@ const Payment = () => {
               Secure Payment Gateway: <span style={{ color: 'var(--success)' }}>Active</span>
             </p>
             <button onClick={handlePayment} className="btn btn-primary" style={{ width: '100%', height: '65px', borderRadius: '18px', fontSize: '1.1rem' }}>
-              <CreditCard size={20} style={{ marginRight: '12px', verticalAlign: 'middle' }} /> 
+              <CreditCard size={20} style={{ marginRight: '12px', verticalAlign: 'middle' }} />
               COMPLETE TRANSACTION
             </button>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '20px', lineHeight: '1.6', opacity: 0.5 }}>

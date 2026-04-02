@@ -30,7 +30,7 @@ const Navbar = () => {
                 href={link.path}
                 className="nav-link"
                 onClick={(e) => {
-                  if(window.location.pathname === '/') {
+                  if (window.location.pathname === '/') {
                     e.preventDefault();
                     document.getElementById(link.path.replace('/#', ''))?.scrollIntoView({ behavior: 'smooth' });
                   }
@@ -52,7 +52,7 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button 
+        <button
           className="mobile-toggle"
           onClick={() => setIsOpen(!isOpen)}
         >
@@ -71,7 +71,7 @@ const Navbar = () => {
                 className="mobile-link"
                 onClick={(e) => {
                   setIsOpen(false);
-                  if(window.location.pathname === '/') {
+                  if (window.location.pathname === '/') {
                     e.preventDefault();
                     document.getElementById(link.path.replace('/#', ''))?.scrollIntoView({ behavior: 'smooth' });
                   }

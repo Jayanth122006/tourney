@@ -20,7 +20,7 @@ const Success = () => {
           <div style={{ width: '80px', height: '80px', background: 'rgba(0, 230, 118, 0.1)', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 30px', border: '1px solid var(--success)', boxShadow: '0 0 40px rgba(0, 230, 118, 0.2)' }}>
             <CheckCircle size={40} color="var(--success)" />
           </div>
-          
+
           <h1 className="gradient-text" style={{ fontSize: '2.5rem', marginBottom: '15px' }}>Registration Successful</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginBottom: '40px' }}>
             Your squad is successfully registered for the tournament.
@@ -28,7 +28,7 @@ const Success = () => {
 
           <div style={{ textAlign: 'left', background: 'rgba(255,255,255,0.02)', padding: '25px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '40px' }}>
             <h3 style={{ fontSize: '0.9rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <CheckCircle size={16} color="var(--success)" /> Summary
+              <CheckCircle size={16} color="var(--success)" /> Summary
             </h3>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
               <span style={{ opacity: 0.5 }}>Squad Name</span>
