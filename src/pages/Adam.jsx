@@ -482,76 +482,86 @@ const Adam = () => {
                                             </button>
                                         </div>
 
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                                            <div>
-                                                <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Room ID</label>
-                                                <input 
-                                                    className="form-input" 
-                                                    style={{ height: '42px', padding: '10px', fontSize: '0.85rem' }} 
-                                                    value={m.roomId || ''} 
-                                                    onChange={(e) => handleMatchInputChange(m.id, 'roomId', e.target.value)}
-                                                    placeholder="123456"
-                                                />
+                                        {m.squad2 === 'BYE' ? (
+                                            <div style={{ background: 'rgba(255,255,255,0.02)', padding: '25px', borderRadius: '16px', textAlign: 'center', border: '1px dashed rgba(255,255,255,0.1)' }}>
+                                                <Trophy size={32} color="var(--primary)" style={{ opacity: 0.3, marginBottom: '10px' }} />
+                                                <div style={{ fontWeight: '800', fontSize: '1rem', color: 'var(--primary)' }}>SQUAD GETS A BYE</div>
+                                                <div style={{ fontSize: '0.75rem', opacity: 0.5, marginTop: '5px' }}>This team advances automatically. No room details needed.</div>
                                             </div>
-                                            <div>
-                                                <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Password</label>
-                                                <input 
-                                                    className="form-input" 
-                                                    style={{ height: '42px', padding: '10px', fontSize: '0.85rem' }} 
-                                                    value={m.password || ''} 
-                                                    onChange={(e) => handleMatchInputChange(m.id, 'password', e.target.value)}
-                                                    placeholder="abcd"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px' }}>
-                                            <div>
-                                                <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Date</label>
-                                                <div style={{ position: 'relative' }}>
-                                                    <Calendar size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
-                                                    <input 
-                                                        className="form-input" 
-                                                        style={{ height: '42px', padding: '10px 10px 10px 35px', fontSize: '0.85rem' }} 
-                                                        value={m.matchDate || ''} 
-                                                        onChange={(e) => handleMatchInputChange(m.id, 'matchDate', e.target.value)}
-                                                        placeholder="5 April"
-                                                    />
+                                        ) : (
+                                            <>
+                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                                    <div>
+                                                        <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Room ID</label>
+                                                        <input 
+                                                            className="form-input" 
+                                                            style={{ height: '42px', padding: '10px', fontSize: '0.85rem' }} 
+                                                            value={m.roomId || ''} 
+                                                            onChange={(e) => handleMatchInputChange(m.id, 'roomId', e.target.value)}
+                                                            placeholder="123456"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Password</label>
+                                                        <input 
+                                                            className="form-input" 
+                                                            style={{ height: '42px', padding: '10px', fontSize: '0.85rem' }} 
+                                                            value={m.password || ''} 
+                                                            onChange={(e) => handleMatchInputChange(m.id, 'password', e.target.value)}
+                                                            placeholder="abcd"
+                                                        />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div>
-                                                <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Time</label>
-                                                <div style={{ position: 'relative' }}>
-                                                    <Clock size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
-                                                    <input 
-                                                        className="form-input" 
-                                                        style={{ height: '42px', padding: '10px 10px 10px 35px', fontSize: '0.85rem' }} 
-                                                        value={m.matchTime || ''} 
-                                                        onChange={(e) => handleMatchInputChange(m.id, 'matchTime', e.target.value)}
-                                                        placeholder="7:00 PM"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
-                                            <button 
-                                                className="btn" 
-                                                style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.05)', color: '#fff', height: '45px', borderRadius: '12px', fontSize: '0.8rem' }}
-                                                onClick={() => handleMatchUpdate(m.id)}
-                                                disabled={m.saving}
-                                            >
-                                                {m.saving ? 'Saving...' : <><Save size={16} /> Save</>}
-                                            </button>
-                                            <button 
-                                                className="btn btn-primary" 
-                                                disabled={!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent || m.sending}
-                                                style={{ flex: 1.5, height: '45px', borderRadius: '12px', fontSize: '0.8rem', opacity: (!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent || m.sending) ? 0.5 : 1 }}
-                                                onClick={() => handleSendToTeams(m.id)}
-                                            >
-                                                {m.sending ? 'Sending...' : (m.sent ? <><Check size={16} /> Sent</> : <><Send size={16} /> Send to Teams</>)}
-                                            </button>
-                                        </div>
+                                                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px' }}>
+                                                    <div>
+                                                        <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Date</label>
+                                                        <div style={{ position: 'relative' }}>
+                                                            <Calendar size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
+                                                            <input 
+                                                                className="form-input" 
+                                                                style={{ height: '42px', padding: '10px 10px 10px 35px', fontSize: '0.85rem' }} 
+                                                                value={m.matchDate || ''} 
+                                                                onChange={(e) => handleMatchInputChange(m.id, 'matchDate', e.target.value)}
+                                                                placeholder="5 April"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label style={{ fontSize: '0.65rem', fontWeight: '800', opacity: 0.4, textTransform: 'uppercase', marginBottom: '6px', display: 'block' }}>Time</label>
+                                                        <div style={{ position: 'relative' }}>
+                                                            <Clock size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
+                                                            <input 
+                                                                className="form-input" 
+                                                                style={{ height: '42px', padding: '10px 10px 10px 35px', fontSize: '0.85rem' }} 
+                                                                value={m.matchTime || ''} 
+                                                                onChange={(e) => handleMatchInputChange(m.id, 'matchTime', e.target.value)}
+                                                                placeholder="7:00 PM"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div style={{ display: 'flex', gap: '10px', marginTop: '5px' }}>
+                                                    <button 
+                                                        className="btn" 
+                                                        style={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.05)', color: '#fff', height: '45px', borderRadius: '12px', fontSize: '0.8rem' }}
+                                                        onClick={() => handleMatchUpdate(m.id)}
+                                                        disabled={m.saving || matches.some(match => match.sending)}
+                                                    >
+                                                        {m.saving ? 'Saving...' : <><Save size={16} /> Save</>}
+                                                    </button>
+                                                    <button 
+                                                        className="btn btn-primary" 
+                                                        disabled={!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent || m.sending || matches.some(match => match.sending)}
+                                                        style={{ flex: 1.5, height: '45px', borderRadius: '12px', fontSize: '0.8rem', opacity: (!m.roomId || !m.password || !m.matchDate || !m.matchTime || m.sent || m.sending || matches.some(match => match.sending)) ? 0.5 : 1 }}
+                                                        onClick={() => handleSendToTeams(m.id)}
+                                                    >
+                                                        {m.sending ? 'Sending...' : (m.sent ? <><Check size={16} /> Sent</> : <><Send size={16} /> Send to Teams</>)}
+                                                    </button>
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                 ))}
                             </div>
