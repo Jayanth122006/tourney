@@ -205,7 +205,9 @@ const Adam = () => {
         try {
             const res = await fetch(`https://tourneyb-production.up.railway.app/api/matches/send/${id}`, { method: 'POST' });
             if (res.ok) {
-                addNotification('Emails are on the way! 🚀');
+                const data = await res.json();
+                const recipientList = data.recipients.join(', ');
+                addNotification(`Sent to: ${recipientList} 🚀`);
                 syncTerminalData();
             } else {
                 const errorData = await res.json();
