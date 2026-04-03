@@ -148,10 +148,20 @@ const Adam = () => {
             message: "Generate new matches? This will overwrite all existing matches.",
             onConfirm: async () => {
                 setLoading(true);
-                await fetch('https://tourneyb-production.up.railway.app/api/matches/generate', { method: 'POST' });
-                addNotification('Matches generated successfully! ⚔️');
-                await syncTerminalData();
-                setLoading(false);
+                try {
+                const res = await fetch('https://tourneyb-production.up.railway.app/api/matches/generate', { method: 'POST' });
+                if (res.ok) {
+                    addNotification('Matches generated successfully! ⚔️');
+                    await syncTerminalData();
+                } else {
+                    const data = await res.json();
+                    addNotification(data.message || 'Generation Failed', 'error');
+                }
+                } catch (e) {
+                    addNotification('Network error during generation', 'error');
+                } finally {
+                    setLoading(false);
+                }
             }
         });
     };
