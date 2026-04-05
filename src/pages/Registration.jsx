@@ -107,7 +107,7 @@ const Registration = () => {
       <div style={{ maxWidth: '800px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '60px' }}>
           <h1 className="gradient-text" style={{ fontSize: '3rem', marginBottom: '15px' }}>Tournament Registration</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Register your team. Entry Fee: <strong>₹100</strong></p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Register your team. Entry Fee: <strong>₹110</strong></p>
 
           {errors.submission && (
             <div className="animate-shake" style={{ marginTop: '30px', padding: '20px', background: 'rgba(255, 71, 87, 0.1)', border: '1px solid var(--danger)', borderRadius: '16px', color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: '15px', justifyContent: 'center' }}>

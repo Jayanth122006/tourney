@@ -112,7 +112,7 @@ const Payment = () => {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                 <span style={{ fontSize: '0.9rem', fontWeight: '800', opacity: 0.6 }}>ENTRY FEE</span>
-                <span style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--primary)' }}>₹100</span>
+                <span style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--primary)' }}>₹110</span>
               </div>
             </div>
           </div>

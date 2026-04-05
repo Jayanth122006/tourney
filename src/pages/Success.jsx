@@ -44,8 +44,14 @@ const Success = () => {
             </div>
           </div>
 
-          <div style={{ marginBottom: '30px' }}>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>Matches commence this weekend. Check the Matches section for your fixtures.</p>
+          <div style={{ marginBottom: '30px', background: 'rgba(0, 242, 254, 0.05)', padding: '25px', borderRadius: '20px', borderLeft: '4px solid var(--primary)', textAlign: 'left' }}>
+            <h4 style={{ color: 'white', fontWeight: 'bold', marginBottom: '10px' }}>What happens next?</h4>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>
+              You will receive the <strong>Room ID and Password by Friday</strong> via email.
+              <br /><br />
+              <span style={{ color: '#ff9f43', fontWeight: 'bold' }}>⚠️ IMPORTANT:</span> Check your <strong>Spam or Junk</strong> folder just in case. 
+              All official tournament emails will be sent from <strong style={{ color: 'var(--primary)' }}>tourneygames1@gmail.com</strong>.
+            </p>
           </div>
 
           <Link to="/" className="btn btn-primary" style={{ width: '100%', height: '60px', borderRadius: '16px' }}>
