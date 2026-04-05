@@ -14,7 +14,7 @@ const JoinUs = () => {
         </div>
 
         <div className="rules-grid" style={{ marginTop: '40px' }}>
-          <a href="https://discord.gg/yQzWZXHY" target="_blank" rel="noopener noreferrer" className="rule-card glass-panel reveal" style={{ textDecoration: 'none', alignItems: 'center', textAlign: 'center' }}>
+          <a href="https://discord.gg/uJPYjh3r" target="_blank" rel="noopener noreferrer" className="rule-card glass-panel reveal" style={{ textDecoration: 'none', alignItems: 'center', textAlign: 'center' }}>
             <div className="rule-icon info" style={{ color: '#5865F2', marginBottom: '20px' }}>
               <MessageSquare size={48} />
             </div>
