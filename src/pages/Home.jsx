@@ -36,7 +36,7 @@ const Home = () => {
           <div className="hero-actions delay-3">
             {isOpen ? (
               <Link to="/register" className="btn btn-primary btn-lg">
-                Register Now - ₹100
+                Register Now - ₹110
               </Link>
             ) : (
               <button className="btn btn-outline btn-lg" disabled style={{ opacity: 0.8, cursor: 'not_allowed' }}>
@@ -122,7 +122,7 @@ const Home = () => {
             <p>{isOpen ? "Slots fill up fast. Secure your team's spot today." : "Registrations are currently closed. Follow our socials for the next season!"}</p>
             {isOpen ? (
               <Link to="/register" className="btn btn-primary btn-lg mt-4">
-                Register Your Squad (₹100)
+                Register Your Squad (₹110)
               </Link>
             ) : (
               <button className="btn btn-outline btn-lg mt-4" disabled>
